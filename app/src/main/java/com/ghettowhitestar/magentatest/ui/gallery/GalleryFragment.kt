@@ -1,4 +1,4 @@
-package com.ghettowhitestar.magentatest.ui.main
+package com.ghettowhitestar.magentatest.ui.gallery
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,11 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ghettowhitestar.magentatest.R
+import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * A placeholder fragment containing a simple view.
- */
-class PlaceholderFragment : Fragment(R.layout.pictures_tape_layout) {
+@AndroidEntryPoint
+class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
 
 
 }

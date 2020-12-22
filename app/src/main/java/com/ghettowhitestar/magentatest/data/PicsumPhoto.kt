@@ -1,4 +1,4 @@
-package com.ghettowhitestar.magentatest.api
+package com.ghettowhitestar.magentatest.data
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

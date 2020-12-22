@@ -1,4 +1,4 @@
-package com.ghettowhitestar.magentatest.ui.main
+package com.ghettowhitestar.magentatest.ui.like
 
 import androidx.fragment.app.Fragment
 import com.ghettowhitestar.magentatest.R

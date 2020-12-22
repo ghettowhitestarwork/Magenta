@@ -1,11 +1,14 @@
-package com.ghettowhitestar.magentatest
+package com.ghettowhitestar.magentatest.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.ghettowhitestar.magentatest.ui.main.SectionsPagerAdapter
+import com.ghettowhitestar.magentatest.R
+import com.ghettowhitestar.magentatest.ui.viewpager.SectionsPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val adapterViewPager by lazy { SectionsPagerAdapter(this) }
 
