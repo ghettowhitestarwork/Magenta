@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import com.ghettowhitestar.magentatest.R
 import com.ghettowhitestar.magentatest.databinding.PicturesTapeLayoutBinding
 import com.ghettowhitestar.magentatest.ui.gallery.paginator.GalleryPhotoAdapter
+import com.ghettowhitestar.magentatest.ui.gallery.paginator.GalleryPhotoLoadStateAdapter
 import com.ghettowhitestar.magentatest.ui.gallery.paginator.PhotoComparator
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,7 +27,10 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
 
         binding.apply {
             recyclerView.setHasFixedSize(true)
-            recyclerView.adapter = adapter
+            recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
+                header = GalleryPhotoLoadStateAdapter{adapter.retry()},
+                footer = GalleryPhotoLoadStateAdapter{adapter.retry()}
+            )
 
         }
 

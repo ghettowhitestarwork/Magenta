@@ -17,11 +17,10 @@ class GalleryPagingSource(
 
         return try {
             val response = api.getListPhotos(position,params.loadSize)
-            val photos = response
-                LoadResult.Page(
-                    data = photos,
+            LoadResult.Page(
+                    data = response,
                     prevKey = if (position == STARTING_PAGE_INDEX) null else position - 1,
-                    nextKey = if (photos.isEmpty()) null else position + 1
+                    nextKey = if (response.isEmpty()) null else position + 1
                 )
         }catch (exception: IOException){
             LoadResult.Error(exception)
