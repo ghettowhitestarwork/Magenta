@@ -9,5 +9,6 @@ data class PicsumPhoto(
     val author: String,
     val width: Int,
     val height: Int,
-    val url: String
+    val url: String,
+    val download_url: String
 ) : Parcelable
