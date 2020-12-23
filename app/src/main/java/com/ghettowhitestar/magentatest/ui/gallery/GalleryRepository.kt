@@ -23,6 +23,6 @@ class GalleryRepository @Inject constructor(private val picsumApi: PicsumApi) {
 
     companion object {
         private const val NETWORK_PAGE_SIZE = 20
-        private const val NETWORK_MAX_SIZE = 50
+        private const val NETWORK_MAX_SIZE = 100
     }
 }
