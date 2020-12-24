@@ -1,4 +1,4 @@
-package com.ghettowhitestar.magentatest.ui.gallery.paginator
+package com.ghettowhitestar.magentatest.paginator
 
 import androidx.paging.PagingSource
 import com.ghettowhitestar.magentatest.api.PicsumApi

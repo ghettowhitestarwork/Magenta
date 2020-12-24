@@ -4,19 +4,20 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.paging.LoadState
 import com.ghettowhitestar.magentatest.R
 import com.ghettowhitestar.magentatest.databinding.PicturesTapeLayoutBinding
-import com.ghettowhitestar.magentatest.ui.gallery.paginator.GalleryPhotoAdapter
-import com.ghettowhitestar.magentatest.ui.gallery.paginator.GalleryPhotoLoadStateAdapter
-import com.ghettowhitestar.magentatest.ui.gallery.paginator.PhotoComparator
+import com.ghettowhitestar.magentatest.ui.PhotoViewModel
+import com.ghettowhitestar.magentatest.paginator.GalleryPhotoAdapter
+import com.ghettowhitestar.magentatest.paginator.GalleryPhotoLoadStateAdapter
+import com.ghettowhitestar.magentatest.paginator.PhotoComparator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
 
-    private val viewModel by viewModels<GalleryViewModel>()
+    private val viewModel : PhotoViewModel by activityViewModels()
     private lateinit var binding : PicturesTapeLayoutBinding
     private lateinit var adapter: GalleryPhotoAdapter
 
@@ -25,7 +26,7 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
 
         binding = PicturesTapeLayoutBinding.bind(view)
 
-        adapter = GalleryPhotoAdapter(PhotoComparator)
+        adapter = GalleryPhotoAdapter(PhotoComparator) { photo,bitmap -> viewModel.likePhoto(photo, bitmap) }
         adapter.addLoadStateListener {
             binding.apply {
                 progressBar.isVisible = it.source.refresh is LoadState.Loading

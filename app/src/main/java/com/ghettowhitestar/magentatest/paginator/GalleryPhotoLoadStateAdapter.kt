@@ -1,4 +1,4 @@
-package com.ghettowhitestar.magentatest.ui.gallery.paginator
+package com.ghettowhitestar.magentatest.paginator
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
