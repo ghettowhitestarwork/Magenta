@@ -38,6 +38,6 @@
         android:layout_alignBottom="@id/picture_image"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="0dp"
-        android:src="@drawable/ic_heart_fill" />
+        android:src="@drawable/ic_dislike_white" />
 
 </RelativeLayout>

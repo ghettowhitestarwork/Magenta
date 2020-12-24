@@ -1,6 +1,7 @@
 package com.ghettowhitestar.magentatest.data
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -10,5 +11,7 @@ data class PicsumPhoto(
     val width: Int,
     val height: Int,
     val url: String,
-    val download_url: String
+    @SerializedName("download_url")
+    val downloadUrl: String,
+    var isLikedPhoto : Boolean = false
 ) : Parcelable

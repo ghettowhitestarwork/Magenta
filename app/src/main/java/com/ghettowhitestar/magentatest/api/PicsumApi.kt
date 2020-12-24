@@ -6,7 +6,7 @@ import retrofit2.http.Query
 
 interface PicsumApi {
 
-    companion object{
+    companion object {
         const val BASE_URL = "https://picsum.photos/"
     }
 

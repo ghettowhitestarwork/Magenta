@@ -1,10 +1,15 @@
 package com.ghettowhitestar.magentatest.di
 
+import android.content.Context
+import androidx.room.Room
 import com.ghettowhitestar.magentatest.api.PicsumApi
+import com.ghettowhitestar.magentatest.db.AppDatabase
+import com.ghettowhitestar.magentatest.db.LikedPhotoDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -25,5 +30,21 @@ object AppModule  {
     @Singleton
     fun providePicsumApi(retrofit: Retrofit) : PicsumApi =
         retrofit.create(PicsumApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideLikedPhotoDao(appDatabase: AppDatabase): LikedPhotoDao {
+        return appDatabase.likedPhotoDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
+        return Room.databaseBuilder(
+            appContext,
+            AppDatabase::class.java,
+            "picsum"
+        ).build()
+    }
 
 }
