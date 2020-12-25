@@ -20,6 +20,10 @@ import com.ghettowhitestar.magentatest.paginator.NetworkResponceState
 import com.ghettowhitestar.magentatest.paginator.Pageable
 import com.ghettowhitestar.magentatest.paginator.Status
 import com.ghettowhitestar.magentatest.ui.gallery.PhotoRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,21 +39,36 @@ class PhotoViewModel @ViewModelInject constructor(
 */
     override val pageSize: Int = 30
     override var hasMore: Boolean = true
-    override var currentPage: Int = 0
+    override var currentPage: Int = 1
     override var isDownloading: Boolean = false
-    private val _res = MutableLiveData<NetworkResponceState<MutableList<PicsumPhoto>>>()
-
-    val res : LiveData<NetworkResponceState<MutableList<PicsumPhoto>>>
+    private val _res = MutableLiveData<MutableList<PicsumPhoto>>()
+    val compositeDisposable = CompositeDisposable()
+    val res : LiveData<MutableList<PicsumPhoto>>
         get() = _res
 
     init {
         getEmployees()
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
+    }
+
     private fun getEmployees() {
         isDownloading = true
         Log.e("TAG", "$isDownloading")
-        viewModelScope.launch {
+        repository.getGalleryPhotosResult(pageSize,currentPage++)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.e("TAG", "$it")
+                _res.add(it)
+                isDownloading = false
+            },{
+                Log.e("TAG", "$it")
+            }).addTo(compositeDisposable)
+        /*iewModelScope.launch {
             _res.postValue(NetworkResponceState.loading(null))
             repository.getGalleryPhotosResult(pageSize,currentPage).let {
                 if (it.isSuccessful) {
@@ -62,9 +81,17 @@ class PhotoViewModel @ViewModelInject constructor(
                 }
                 isDownloading = false
             }
+        }*/
         }
+    fun <T> MutableLiveData<MutableList<T>>.add(items: List<T>?) {
+        items?.let {
+            val updatedItems = mutableListOf<T>().apply {
+                addAll(this@add.value ?: mutableListOf())
+                addAll(items)
+            }
+            this.value = updatedItems
         }
-
+    }
     fun <T> MutableLiveData<NetworkResponceState<MutableList<T>>>.postAdd(networkResponceState: NetworkResponceState<List<T>>) {
         networkResponceState.data?.let {
             val updatedValue = NetworkResponceState(

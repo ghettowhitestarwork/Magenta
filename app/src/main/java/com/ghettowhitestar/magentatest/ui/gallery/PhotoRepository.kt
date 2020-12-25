@@ -20,7 +20,7 @@ import javax.inject.Singleton
 @Singleton
 class PhotoRepository @Inject constructor(private val picsumApi: PicsumApi,private val likedPhotoDao: LikedPhotoDao){
 
-   suspend fun getGalleryPhotosResult(pageSize:Int,currentPage: Int) = picsumApi.getListPhotos(currentPage,pageSize)
+   fun getGalleryPhotosResult(pageSize:Int,currentPage: Int) = picsumApi.getListPhotos(currentPage,pageSize)
 
 
 

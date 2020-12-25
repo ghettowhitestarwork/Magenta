@@ -2,7 +2,7 @@ package com.ghettowhitestar.magentatest.api
 
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
 import com.ghettowhitestar.magentatest.paginator.NetworkResponceState
-import retrofit2.Response
+import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -13,10 +13,10 @@ interface PicsumApi {
     }
 
 @GET("v2/list")
-suspend fun getListPhotos(
+ fun getListPhotos(
     @Query("page") page: Int,
     @Query("limit") limit :Int
-) : Response<List<PicsumPhoto>>
+) : Single <List<PicsumPhoto>>
 
 
 }

@@ -37,7 +37,7 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
         }
 
         viewModel.res.observe(viewLifecycleOwner,{
-            it.data?.let {items->
+            it.let {items->
                 adapter.updateItems(items)
             }
 
