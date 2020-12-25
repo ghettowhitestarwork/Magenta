@@ -6,9 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.ghettowhitestar.magentatest.R
 import com.ghettowhitestar.magentatest.databinding.PicturesTapeLayoutBinding
-import com.ghettowhitestar.magentatest.paginator.GalleryPhotoAdapter
-import com.ghettowhitestar.magentatest.paginator.PhotoComparator
-import com.ghettowhitestar.magentatest.ui.PhotoViewModel
+import com.ghettowhitestar.magentatest.ui.adapter.GalleryPhotoAdapter
+import com.ghettowhitestar.magentatest.vm.PhotoViewModel
 
 class LikesFragment : Fragment(R.layout.pictures_tape_layout) {
 
@@ -21,28 +20,20 @@ class LikesFragment : Fragment(R.layout.pictures_tape_layout) {
 
         binding = PicturesTapeLayoutBinding.bind(view)
 
-        /* adapter = GalleryPhotoAdapter(PhotoComparator) { position,photo,bitmap -> viewModel.likePhoto(position,photo, bitmap) }
-        *//* adapter.addLoadStateListener {
-             binding.apply {
-                 progressBar.isVisible = it.source.refresh is LoadState.Loading
-                 recyclerView.isVisible = it.source.refresh is LoadState.NotLoading
-                 buttonRetry.isVisible = it.source.refresh is LoadState.Error
-                 textViewError.isVisible = it.source.refresh is LoadState.Error
-             }
-         }*//*
+        adapter = GalleryPhotoAdapter { position, photo, bitmap -> viewModel.changeLikePhoto(position,photo, bitmap) }
+
 
         binding.apply {
-            recyclerView.setHasFixedSize(true)
-            recyclerView.adapter = adapter*//*.withLoadStateHeaderAndFooter(
-                header = GalleryPhotoLoadStateAdapter{adapter.retry()},
-                footer = GalleryPhotoLoadStateAdapter{adapter.retry()}
-            )*//*
-            buttonRetry.setOnClickListener { adapter.retry() }
+            recyclerView.adapter = adapter
+            buttonRetry.setOnClickListener { }
         }
 
-        viewModel.likedPhotos.observe(viewLifecycleOwner){
-            adapter.submitData(viewLifecycleOwner.lifecycle,it)
-        }
-    }*/
+        viewModel.likedPhotoList.observe(viewLifecycleOwner,{
+            it.let {items->
+                adapter.updateItems(items)
+            }
+
+        })
+
     }
 }

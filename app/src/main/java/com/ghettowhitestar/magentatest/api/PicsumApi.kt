@@ -1,7 +1,6 @@
 package com.ghettowhitestar.magentatest.api
 
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
-import com.ghettowhitestar.magentatest.paginator.NetworkResponceState
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query

@@ -1,4 +1,4 @@
-package com.ghettowhitestar.magentatest.paginator
+package com.ghettowhitestar.magentatest.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
