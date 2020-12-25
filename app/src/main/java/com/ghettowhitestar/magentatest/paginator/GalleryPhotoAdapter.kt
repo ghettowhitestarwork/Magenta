@@ -5,6 +5,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ghettowhitestar.magentatest.R
@@ -12,28 +13,40 @@ import com.ghettowhitestar.magentatest.data.PicsumPhoto
 import com.ghettowhitestar.magentatest.databinding.ItemPhotoBinding
 
 
-class GalleryPhotoAdapter(diffCallback: PhotoComparator, private val listenerLike:(PicsumPhoto, Bitmap) ->Unit) : PagingDataAdapter<PicsumPhoto, GalleryPhotoAdapter.PhotoViewHolder>(
-    diffCallback
-) {
-
+class GalleryPhotoAdapter(
+    private var items: List<PicsumPhoto> = mutableListOf(),
+    private val listenerLike:(Int,PicsumPhoto, Bitmap) ->Unit) :
+    RecyclerView.Adapter<GalleryPhotoAdapter.PhotoViewHolder>()
+{
+    private var diffUtilCallback: PhotoComparator? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
         val binding = ItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PhotoViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        val currentItem = getItem(position)
 
-        if (currentItem !=null){
-            holder.bind(currentItem,listenerLike)
-        }
+
+
+            holder.bind(items[position],listenerLike)
+
 
     }
 
+    open fun updateItems(items: MutableList<PicsumPhoto>) {
+        /*diffUtilCallback = PhotoComparator(this.items,items)
+        diffUtilCallback?.let {
+            val diffResult = DiffUtil.calculateDiff(it)
+            this.items = items
+            diffResult.dispatchUpdatesTo(this)
+        }*/
+        this.items = items
+        notifyDataSetChanged()
+    }
     class PhotoViewHolder(private val binding: ItemPhotoBinding) :
         RecyclerView.ViewHolder(binding.root){
 
-        fun bind(photo: PicsumPhoto, listenerLike: (PicsumPhoto, Bitmap) -> Unit){
+        fun bind(photo: PicsumPhoto, listenerLike: (Int, PicsumPhoto, Bitmap) -> Unit){
             binding.apply {
                 Glide.with(itemView)
                     .asBitmap()
@@ -49,7 +62,7 @@ class GalleryPhotoAdapter(diffCallback: PhotoComparator, private val listenerLik
                 likeButton.setOnClickListener {
                         setLikeImage(!photo.isLikedPhoto)
                         val bitmap =  (pictureImage.drawable as BitmapDrawable).bitmap
-                        listenerLike(photo,bitmap)
+                        listenerLike(absoluteAdapterPosition,photo,bitmap)
                 }
             }
         }
@@ -61,4 +74,6 @@ class GalleryPhotoAdapter(diffCallback: PhotoComparator, private val listenerLik
                 binding.likeButton.setImageResource(R.drawable.ic_dislike_white)
         }
     }
+
+    override fun getItemCount(): Int = items.size
 }

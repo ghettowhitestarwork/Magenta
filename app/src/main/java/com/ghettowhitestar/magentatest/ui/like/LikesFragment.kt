@@ -21,27 +21,28 @@ class LikesFragment : Fragment(R.layout.pictures_tape_layout) {
 
         binding = PicturesTapeLayoutBinding.bind(view)
 
-        adapter = GalleryPhotoAdapter(PhotoComparator) { photo,bitmap -> viewModel.likePhoto(photo, bitmap) }
-        /* adapter.addLoadStateListener {
+        /* adapter = GalleryPhotoAdapter(PhotoComparator) { position,photo,bitmap -> viewModel.likePhoto(position,photo, bitmap) }
+        *//* adapter.addLoadStateListener {
              binding.apply {
                  progressBar.isVisible = it.source.refresh is LoadState.Loading
                  recyclerView.isVisible = it.source.refresh is LoadState.NotLoading
                  buttonRetry.isVisible = it.source.refresh is LoadState.Error
                  textViewError.isVisible = it.source.refresh is LoadState.Error
              }
-         }*/
+         }*//*
 
         binding.apply {
             recyclerView.setHasFixedSize(true)
-            recyclerView.adapter = adapter/*.withLoadStateHeaderAndFooter(
+            recyclerView.adapter = adapter*//*.withLoadStateHeaderAndFooter(
                 header = GalleryPhotoLoadStateAdapter{adapter.retry()},
                 footer = GalleryPhotoLoadStateAdapter{adapter.retry()}
-            )*/
+            )*//*
             buttonRetry.setOnClickListener { adapter.retry() }
         }
 
         viewModel.likedPhotos.observe(viewLifecycleOwner){
             adapter.submitData(viewLifecycleOwner.lifecycle,it)
         }
+    }*/
     }
 }

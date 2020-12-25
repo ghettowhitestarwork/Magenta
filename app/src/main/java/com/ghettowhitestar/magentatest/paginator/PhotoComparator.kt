@@ -3,9 +3,19 @@ package com.ghettowhitestar.magentatest.paginator
 import androidx.recyclerview.widget.DiffUtil
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
 
-object PhotoComparator : DiffUtil.ItemCallback<PicsumPhoto>() {
-    override fun areItemsTheSame(oldItem: PicsumPhoto, newItem: PicsumPhoto): Boolean =
-        oldItem.id == newItem.id
-    override fun areContentsTheSame(oldItem: PicsumPhoto, newItem: PicsumPhoto): Boolean =
-        oldItem == newItem
+class PhotoComparator(private val oldItem: List<PicsumPhoto>,private val newItem: List<PicsumPhoto>) : DiffUtil.Callback() {
+
+
+    override fun getOldListSize(): Int = oldItem.size
+
+
+    override fun getNewListSize(): Int = newItem.size
+
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+        oldItem[oldItemPosition].id == newItem[newItemPosition].id
+
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+        oldItem[oldItemPosition] == newItem[newItemPosition]
 }

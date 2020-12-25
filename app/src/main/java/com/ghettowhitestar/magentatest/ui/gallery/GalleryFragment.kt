@@ -7,10 +7,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.paging.LoadState
 import com.ghettowhitestar.magentatest.R
+import com.ghettowhitestar.magentatest.data.PicsumPhoto
 import com.ghettowhitestar.magentatest.databinding.PicturesTapeLayoutBinding
 import com.ghettowhitestar.magentatest.ui.PhotoViewModel
 import com.ghettowhitestar.magentatest.paginator.GalleryPhotoAdapter
-import com.ghettowhitestar.magentatest.paginator.GalleryPhotoLoadStateAdapter
+import com.ghettowhitestar.magentatest.paginator.PaginationListener
 import com.ghettowhitestar.magentatest.paginator.PhotoComparator
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,27 +27,21 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
 
         binding = PicturesTapeLayoutBinding.bind(view)
 
-        adapter = GalleryPhotoAdapter(PhotoComparator) { photo,bitmap -> viewModel.likePhoto(photo, bitmap) }
-        adapter.addLoadStateListener {
-            binding.apply {
-                progressBar.isVisible = it.source.refresh is LoadState.Loading
-                recyclerView.isVisible = it.source.refresh is LoadState.NotLoading
-                buttonRetry.isVisible = it.source.refresh is LoadState.Error
-                textViewError.isVisible = it.source.refresh is LoadState.Error
-            }
-        }
+        adapter = GalleryPhotoAdapter { position, photo, bitmap -> viewModel.likePhoto(position,photo, bitmap) }
+
 
         binding.apply {
-            recyclerView.setHasFixedSize(true)
-            recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
-                header = GalleryPhotoLoadStateAdapter{adapter.retry()},
-                footer = GalleryPhotoLoadStateAdapter{adapter.retry()}
-            )
-            buttonRetry.setOnClickListener { adapter.retry() }
+            recyclerView.addOnScrollListener(PaginationListener(viewModel))
+            recyclerView.adapter = adapter
+            buttonRetry.setOnClickListener { }
         }
 
-        viewModel.photos.observe(viewLifecycleOwner){
-            adapter.submitData(viewLifecycleOwner.lifecycle,it)
-        }
+        viewModel.res.observe(viewLifecycleOwner,{
+            it.data?.let {items->
+                adapter.updateItems(items)
+            }
+
+        })
+
     }
 }
