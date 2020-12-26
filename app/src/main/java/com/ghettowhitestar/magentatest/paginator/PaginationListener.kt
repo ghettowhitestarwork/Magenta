@@ -21,7 +21,6 @@ class PaginationListener(
             (visibleItemCount + firstVisibleItemPosition) >= totalItemCount &&
             firstVisibleItemPosition >= 0 &&
             totalItemCount >= pageableCallback.pageSize) {
-                Log.e("HUEG", "${pageableCallback.isDownloading}")
             pageableCallback.loadNextPage()
         }
     }

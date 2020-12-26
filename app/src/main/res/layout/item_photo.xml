@@ -21,8 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/picture_image"
-        android:layout_margin="8dp"
-        android:drawablePadding="4dp"
+        android:layout_margin="@dimen/base_margin"
+        android:drawablePadding="@dimen/base_padding"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
@@ -32,12 +32,11 @@
 
     <ImageView
         android:id="@+id/like_button"
-        android:layout_width="25dp"
-        android:layout_margin="8dp"
-        android:layout_height="25dp"
+        android:layout_width="@dimen/image_size"
+        android:layout_margin="@dimen/base_margin"
+        android:layout_height="@dimen/image_size"
         android:layout_alignBottom="@id/picture_image"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="0dp"
         android:src="@drawable/ic_dislike_white" />
 
 </RelativeLayout>
