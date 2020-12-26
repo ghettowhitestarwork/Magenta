@@ -13,10 +13,10 @@ import io.reactivex.Single
 interface LikedPhotoDao {
 
     @Query("SELECT * FROM PicsumPhoto")
-     fun getAllLikedPhotos(): Single<List<PicsumPhoto>>
+    fun getAllLikedPhotos(): Single<List<PicsumPhoto>>
 
     @Insert
-   fun insertLikedPhoto(likedPhoto: PicsumPhoto)
+    fun insertLikedPhoto(likedPhoto: PicsumPhoto)
 
     @Delete
     fun deleteLikedPhoto(likedPhoto: PicsumPhoto)

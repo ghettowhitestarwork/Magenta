@@ -2,9 +2,6 @@ package com.ghettowhitestar.magentatest.repo
 
 import android.graphics.Bitmap
 import android.os.Environment
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.liveData
 import com.ghettowhitestar.magentatest.api.PicsumApi
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
 import com.ghettowhitestar.magentatest.db.LikedPhotoDao
@@ -19,23 +16,18 @@ import javax.inject.Singleton
 @Singleton
 class PhotoRepository @Inject constructor(private val picsumApi: PicsumApi,private val likedPhotoDao: LikedPhotoDao){
 
-   fun getGalleryPhotosResult(pageSize:Int,currentPage: Int) = picsumApi.getListPhotos(currentPage,pageSize)
+   fun getGalleryPhotosResult(pageSize:Int,currentPage: Int) = picsumApi.getListGalleryPhotos(currentPage,pageSize)
 
+   fun getLikesPhotoResult() =
+       likedPhotoDao.getAllLikedPhotos()
 
+   fun insertLikedPhoto(photo: PicsumPhoto) =
+       likedPhotoDao.insertLikedPhoto(photo)
 
-
-    fun getLikesPhotoResult() = likedPhotoDao.getAllLikedPhotos()
-
-
-    fun insertLikedPhoto(photo: PicsumPhoto) =
-        likedPhotoDao.insertLikedPhoto(photo)
-
-    fun deleteLikedPhoto(photo: PicsumPhoto) =
-        likedPhotoDao.deleteLikedPhoto(photo)
-
+   fun deleteLikedPhoto(photo: PicsumPhoto) =
+       likedPhotoDao.deleteLikedPhoto(photo)
 
    fun deleteImage(photoName:String){
-
         val storageDir = File(
             Environment.getExternalStorageDirectory()
                 .toString() + "/DCIM"
@@ -43,13 +35,10 @@ class PhotoRepository @Inject constructor(private val picsumApi: PicsumApi,priva
         val imageFile = File(storageDir, photoName)
         if (imageFile.exists()){
             imageFile.delete()
-
-
         }
     }
 
     fun saveImage(image: Bitmap, photo: PicsumPhoto) {
-
         val storageDir = File(
             Environment.getExternalStorageDirectory()
                 .toString() + "/DCIM"
@@ -67,10 +56,6 @@ class PhotoRepository @Inject constructor(private val picsumApi: PicsumApi,priva
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
-
         }
     }
-
-
 }

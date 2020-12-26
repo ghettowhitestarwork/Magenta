@@ -19,4 +19,4 @@ data class PicsumPhoto(
     var isLikedPhoto : Boolean = false,
     @ColumnInfo(name = "path")
     var path: String
-) : Parcelable
+): Parcelable

@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
 
-    private val viewModel : PhotoViewModel by activityViewModels()
+    private val viewModel: PhotoViewModel by activityViewModels()
     private lateinit var binding : PicturesTapeLayoutBinding
     private lateinit var adapter: GalleryPhotoAdapter
 
@@ -24,7 +24,6 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
         binding = PicturesTapeLayoutBinding.bind(view)
 
         adapter = GalleryPhotoAdapter { position, photo, bitmap -> viewModel.changeLikePhoto(position,photo, bitmap) }
-
 
         binding.apply {
             recyclerView.addOnScrollListener(PaginationListener(viewModel))
@@ -36,8 +35,6 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
             it.let {items->
                 adapter.updateItems(items)
             }
-
         })
-
     }
 }

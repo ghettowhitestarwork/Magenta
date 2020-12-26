@@ -34,7 +34,6 @@ class PhotoViewModel @ViewModelInject constructor(
     val likedPhotoList : LiveData<MutableList<PicsumPhoto>>
         get() = mutableLikedPhotoList
 
-
     init {
         getLikedPhoto()
     }
@@ -51,18 +50,18 @@ class PhotoViewModel @ViewModelInject constructor(
             }).addTo(compositeDisposable)
     }
 
-     fun getGalleryPhoto() {
-        isDownloading = true
-        repository.getGalleryPhotosResult(pageSize, currentPage++)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                mutableGalleryPhotoList.add(isGalleryPhotoLiked(it))
-                isDownloading = false
-            }, {
+    fun getGalleryPhoto() {
+       isDownloading = true
+       repository.getGalleryPhotosResult(pageSize, currentPage++)
+           .subscribeOn(Schedulers.io())
+           .observeOn(AndroidSchedulers.mainThread())
+           .subscribe({
+               mutableGalleryPhotoList.add(isGalleryPhotoLiked(it))
+               isDownloading = false
+           }, {
 
-            }).addTo(compositeDisposable)
-        }
+           }).addTo(compositeDisposable)
+    }
 
 
     @SuppressLint("CheckResult")

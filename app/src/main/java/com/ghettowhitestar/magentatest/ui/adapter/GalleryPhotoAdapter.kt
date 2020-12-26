@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ghettowhitestar.magentatest.R
@@ -23,24 +24,23 @@ class GalleryPhotoAdapter(
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-
-
-
-            holder.bind(items[position],listenerLike)
-
-
+        holder.bind(items[position],listenerLike)
     }
 
     open fun updateItems(items: MutableList<PicsumPhoto>) {
-        /*diffUtilCallback = PhotoComparator(this.items,items)
+      /*  diffUtilCallback = PhotoComparator(this.items,items)
         diffUtilCallback?.let {
             val diffResult = DiffUtil.calculateDiff(it)
+            this.items = mutableListOf()
             this.items = items
             diffResult.dispatchUpdatesTo(this)
         }*/
         this.items = items
         notifyDataSetChanged()
     }
+
+    override fun getItemCount(): Int = items.size
+
     class PhotoViewHolder(private val binding: ItemPhotoBinding) :
         RecyclerView.ViewHolder(binding.root){
 
@@ -72,6 +72,4 @@ class GalleryPhotoAdapter(
                 binding.likeButton.setImageResource(R.drawable.ic_dislike_white)
         }
     }
-
-    override fun getItemCount(): Int = items.size
 }

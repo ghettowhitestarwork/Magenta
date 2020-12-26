@@ -11,8 +11,8 @@ import com.ghettowhitestar.magentatest.vm.PhotoViewModel
 
 class LikesFragment : Fragment(R.layout.pictures_tape_layout) {
 
-    private val viewModel : PhotoViewModel by activityViewModels()
-    private lateinit var binding : PicturesTapeLayoutBinding
+    private val viewModel: PhotoViewModel by activityViewModels()
+    private lateinit var binding: PicturesTapeLayoutBinding
     private lateinit var adapter: GalleryPhotoAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -21,7 +21,6 @@ class LikesFragment : Fragment(R.layout.pictures_tape_layout) {
         binding = PicturesTapeLayoutBinding.bind(view)
 
         adapter = GalleryPhotoAdapter { position, photo, bitmap -> viewModel.changeLikePhoto(position,photo, bitmap) }
-
 
         binding.apply {
             recyclerView.adapter = adapter
@@ -32,8 +31,6 @@ class LikesFragment : Fragment(R.layout.pictures_tape_layout) {
             it.let {items->
                 adapter.updateItems(items)
             }
-
         })
-
     }
 }
