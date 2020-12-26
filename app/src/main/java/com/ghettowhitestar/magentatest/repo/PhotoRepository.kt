@@ -1,6 +1,7 @@
 package com.ghettowhitestar.magentatest.repo
 
 import android.graphics.Bitmap
+import android.net.ConnectivityManager
 import android.os.Environment
 import com.ghettowhitestar.magentatest.api.PicsumApi
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
@@ -14,7 +15,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PhotoRepository @Inject constructor(private val picsumApi: PicsumApi,private val likedPhotoDao: LikedPhotoDao){
+class PhotoRepository @Inject constructor(private val picsumApi: PicsumApi,private val likedPhotoDao: LikedPhotoDao,private val connectivityManager: ConnectivityManager){
 
    fun getGalleryPhotosResult(pageSize:Int,currentPage: Int) = picsumApi.getListGalleryPhotos(currentPage,pageSize)
 
@@ -26,6 +27,8 @@ class PhotoRepository @Inject constructor(private val picsumApi: PicsumApi,priva
 
    fun deleteLikedPhoto(photo: PicsumPhoto) =
        likedPhotoDao.deleteLikedPhoto(photo)
+
+   fun isNetworkAvailable() = connectivityManager.activeNetwork == null
 
    fun deleteImage(photoName:String){
         val storageDir = File(

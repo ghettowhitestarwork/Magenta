@@ -26,15 +26,41 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
         adapter = GalleryPhotoAdapter { position, photo, bitmap -> viewModel.changeLikePhoto(position,photo, bitmap) }
 
         binding.apply {
+            progressBar.visibility = View.VISIBLE
+            textViewError.text = getString(R.string.connectionInternet)
             recyclerView.addOnScrollListener(PaginationListener(viewModel))
             recyclerView.adapter = adapter
-            buttonRetry.setOnClickListener { viewModel.getGalleryPhoto()}
+            buttonRetry.setOnClickListener {
+                progressBar.visibility = View.VISIBLE
+                binding.textViewError.visibility = View.GONE
+                binding.buttonRetry.visibility = View.GONE
+                viewModel.checkNetworkConnection()}
         }
 
         viewModel.galleryPhotoList.observe(viewLifecycleOwner,{
             it.let {items->
                 adapter.updateItems(items)
+                binding.progressBar.visibility = View.GONE
             }
+
         })
+
+        viewModel.isStartNetwork.observe(viewLifecycleOwner,{
+            isGalleryEmpty(it)
+        })
+
+    }
+
+    fun isGalleryEmpty(isNetwork:Boolean){
+        binding.apply {
+            if (isNetwork) {
+                progressBar.visibility = View.GONE
+                textViewError.visibility = View.VISIBLE
+                buttonRetry.visibility = View.VISIBLE
+            } else {
+                textViewError.visibility = View.GONE
+                buttonRetry.visibility = View.GONE
+            }
+        }
     }
 }

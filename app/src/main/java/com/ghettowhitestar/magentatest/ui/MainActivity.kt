@@ -1,7 +1,11 @@
 package com.ghettowhitestar.magentatest.ui
 
+import android.app.Service
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.ghettowhitestar.magentatest.R
 import com.ghettowhitestar.magentatest.ui.viewpager.SectionsPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator

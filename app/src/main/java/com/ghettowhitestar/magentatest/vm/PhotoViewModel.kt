@@ -1,11 +1,17 @@
 package com.ghettowhitestar.magentatest.vm
 
 import android.annotation.SuppressLint
+import android.app.Application
+import android.content.Context
 import android.graphics.Bitmap
+import android.net.ConnectivityManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.ghettowhitestar.magentatest.App
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
 import com.ghettowhitestar.magentatest.paginator.Pageable
 import com.ghettowhitestar.magentatest.repo.PhotoRepository
@@ -18,13 +24,17 @@ import io.reactivex.schedulers.Schedulers
 
 class PhotoViewModel @ViewModelInject constructor(
     private val repository: PhotoRepository
-) : ViewModel(),Pageable {
+) :ViewModel(),Pageable {
 
     override val pageSize: Int = 30
     override var hasMore: Boolean = true
     override var currentPage: Int = 1
     override var isDownloading: Boolean = false
     val compositeDisposable = CompositeDisposable()
+
+    private val mutableIsStartNetwork = MutableLiveData<Boolean>()
+    val isStartNetwork  : LiveData<Boolean>
+        get() = mutableIsStartNetwork
 
     private val mutableGalleryPhotoList = MutableLiveData<MutableList<PicsumPhoto>>()
     val galleryPhotoList : LiveData<MutableList<PicsumPhoto>>
@@ -44,22 +54,31 @@ class PhotoViewModel @ViewModelInject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 mutableLikedPhotoList.add(it)
-                getGalleryPhoto()
-            }, {
-
-            }).addTo(compositeDisposable)
+                checkNetworkConnection()
+            }, {}).addTo(compositeDisposable)
     }
+
+    fun checkNetworkConnection(){
+        if(repository.isNetworkAvailable()){
+            mutableIsStartNetwork.value = true
+        }else{
+            mutableIsStartNetwork.value = false
+            getGalleryPhoto()
+        }
+    }
+
 
     fun getGalleryPhoto() {
        isDownloading = true
-       repository.getGalleryPhotosResult(pageSize, currentPage++)
+       repository.getGalleryPhotosResult(pageSize, currentPage)
            .subscribeOn(Schedulers.io())
            .observeOn(AndroidSchedulers.mainThread())
            .subscribe({
+               currentPage++
                mutableGalleryPhotoList.add(isGalleryPhotoLiked(it))
                isDownloading = false
            }, {
-
+               isDownloading = false
            }).addTo(compositeDisposable)
     }
 
@@ -75,9 +94,7 @@ class PhotoViewModel @ViewModelInject constructor(
                 .subscribe({
                     mutableLikedPhotoList.delete(listOf(photo))
                     findLikedPhoto(photo)
-                }, {
-
-                })
+                }, {})
             }else {
                 photo.isLikedPhoto = true
                 photo.path = photo.id + ".jpg"
@@ -89,7 +106,9 @@ class PhotoViewModel @ViewModelInject constructor(
                 .subscribe({
                     mutableLikedPhotoList.add( listOf(photo))
                 }, {
-
+                    photo.isLikedPhoto = false
+                    photo.path = ""
+                    mutableLikedPhotoList.add( listOf(photo))
                 })
         }
     }

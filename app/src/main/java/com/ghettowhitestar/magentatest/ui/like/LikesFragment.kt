@@ -29,8 +29,17 @@ class LikesFragment : Fragment(R.layout.pictures_tape_layout) {
 
         viewModel.likedPhotoList.observe(viewLifecycleOwner,{
             it.let {items->
+                isLikeListEmpty(it.isEmpty())
                 adapter.updateItems(items)
             }
         })
     }
+
+     fun isLikeListEmpty(isEmpty: Boolean){
+         if (isEmpty){
+             binding.textViewError.visibility = View.VISIBLE
+         }else {
+             binding.textViewError.visibility = View.GONE
+         }
+     }
 }

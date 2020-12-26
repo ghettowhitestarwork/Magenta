@@ -1,6 +1,9 @@
 package com.ghettowhitestar.magentatest.di
 
+import android.app.Service
 import android.content.Context
+import android.net.ConnectivityManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.room.Room
 import com.ghettowhitestar.magentatest.api.PicsumApi
 import com.ghettowhitestar.magentatest.db.AppDatabase
@@ -27,6 +30,14 @@ object AppModule  {
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
+
+    @Provides
+    @Singleton
+    fun checkNetwork(@ApplicationContext appContext: Context):ConnectivityManager{
+        var connectivity : ConnectivityManager? = null
+        connectivity = appContext.getSystemService(Service.CONNECTIVITY_SERVICE)as ConnectivityManager
+        return connectivity
+    }
 
     @Provides
     @Singleton
