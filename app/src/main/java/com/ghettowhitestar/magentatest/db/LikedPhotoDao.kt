@@ -8,19 +8,19 @@ import androidx.room.Query
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
 import io.reactivex.Single
 
-//Методы для работы с базой данных
+/**Методы для работы с базой данных*/
 @Dao
 interface LikedPhotoDao {
 
-    //Получение всех понравившихся фотографий
+    /**Получение всех понравившихся фотографий*/
     @Query("SELECT * FROM PicsumPhoto")
     fun getAllLikedPhotos(): Single<List<PicsumPhoto>>
 
-    //Добавление понравившейся фотографии
+    /**Добавление понравившейся фотографии*/
     @Insert
     fun insertLikedPhoto(likedPhoto: PicsumPhoto)
 
-    //Удаление понравившейся фотографии
+    /**Удаление понравившейся фотографии*/
     @Delete
     fun deleteLikedPhoto(likedPhoto: PicsumPhoto)
 }

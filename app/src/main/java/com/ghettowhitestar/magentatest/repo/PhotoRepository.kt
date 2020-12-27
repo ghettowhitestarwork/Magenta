@@ -6,6 +6,7 @@ import android.os.Environment
 import com.ghettowhitestar.magentatest.api.PicsumApi
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
 import com.ghettowhitestar.magentatest.db.LikedPhotoDao
+import com.ghettowhitestar.magentatest.source.CacheManager
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -15,53 +16,28 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PhotoRepository @Inject constructor(private val picsumApi: PicsumApi,private val likedPhotoDao: LikedPhotoDao,private val connectivityManager: ConnectivityManager){
+class PhotoRepository @Inject constructor(
+    private val picsumApi: PicsumApi,
+    private val likedPhotoDao: LikedPhotoDao,
+    private val connectivityManager: ConnectivityManager,
+    private val cacheManager: CacheManager
+) {
 
-   fun getGalleryPhotosResult(pageSize:Int,currentPage: Int) = picsumApi.getListGalleryPhotos(currentPage,pageSize)
+    fun getGalleryPhotosResult(pageSize: Int, currentPage: Int) =
+        picsumApi.getListGalleryPhotos(currentPage, pageSize)
 
-   fun getLikesPhotoResult() =
-       likedPhotoDao.getAllLikedPhotos()
+    fun getLikesPhotoResult() =
+        likedPhotoDao.getAllLikedPhotos()
 
-   fun insertLikedPhoto(photo: PicsumPhoto) =
-       likedPhotoDao.insertLikedPhoto(photo)
+    fun insertLikedPhoto(photo: PicsumPhoto) =
+        likedPhotoDao.insertLikedPhoto(photo)
 
-   fun deleteLikedPhoto(photo: PicsumPhoto) =
-       likedPhotoDao.deleteLikedPhoto(photo)
+    fun deleteLikedPhoto(photo: PicsumPhoto) =
+        likedPhotoDao.deleteLikedPhoto(photo)
 
-   fun isNetworkAvailable() = connectivityManager.activeNetwork == null
+    fun isNetworkAvailable() = connectivityManager.activeNetwork == null
 
-    // Удаление фотографии из памяти телефона
-    // @ path путь к сохраненной фотографии
-   fun deleteImage(path:String){
-        val storageDir = File(
-            Environment.getExternalStorageDirectory()
-                .toString() + "/DCIM"
-        )
-        val imageFile = File(storageDir, path)
-        if (imageFile.exists()){
-            imageFile.delete()
-        }
-    }
+    fun saveImage(image: Bitmap, photo: PicsumPhoto) = cacheManager.saveImage(image, photo)
 
-    // Сохранение фотографии на телефоне
-    fun saveImage(image: Bitmap, photo: PicsumPhoto) {
-        val storageDir = File(
-            Environment.getExternalStorageDirectory()
-                .toString() + "/DCIM"
-        )
-        var success = true
-        if (!storageDir.exists()) {
-            success = storageDir.mkdirs()
-        }
-        if (success) {
-            val imageFile = File(storageDir, photo.path)
-            try {
-                val fOut: OutputStream = FileOutputStream(imageFile)
-                image.compress(Bitmap.CompressFormat.JPEG, 30, fOut)
-                fOut.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
+    fun deleteImage(path: String) = cacheManager.deleteImage(path)
 }

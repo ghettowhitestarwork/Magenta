@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
 import com.ghettowhitestar.magentatest.paginator.Pageable
 import com.ghettowhitestar.magentatest.repo.PhotoRepository
+import com.ghettowhitestar.magentatest.utils.add
+import com.ghettowhitestar.magentatest.utils.delete
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -66,7 +68,7 @@ class PhotoViewModel @ViewModelInject constructor(
         }
     }
 
-    // Запрос и обработка результата рандомных фотографий
+    /** Запрос и обработка результата рандомных фотографий */
     private fun getGalleryPhoto() {
        isDownloading = true
        repository.getGalleryPhotosResult(pageSize, currentPage)
@@ -81,9 +83,11 @@ class PhotoViewModel @ViewModelInject constructor(
            }).addTo(compositeDisposable)
     }
 
-    // Обработка события при лайке/дизлайке фотографии
-    // @param bitmap файл картинки, для сохранения на телефоне
-    // @param photo информация о картинке для записи/удаления из бд
+    /**
+     * Обработка события при лайке/дизлайке фотографии
+     * @param bitmap файл картинки, для сохранения на телефоне
+     * @param photo информация о картинке для записи/удаления из бд
+     */
     @SuppressLint("CheckResult")
     fun changeLikePhoto(photo: PicsumPhoto, bitmap: Bitmap){
         if (photo.isLikedPhoto) {
@@ -162,33 +166,4 @@ class PhotoViewModel @ViewModelInject constructor(
         super.onCleared()
         compositeDisposable.dispose()
     }
-
-     /*
-     Добавляет элемент в список для наблюдения за ним в MutableLiveData
-     @param items Список
-    */
-     private fun <T> MutableLiveData<MutableList<T>>.add(items: List<T>?) {
-        items?.let {
-            val updatedItems = mutableListOf<T>().apply {
-                addAll(this@add.value ?: mutableListOf())
-                addAll(items)
-            }
-            this.value = updatedItems
-        }
-    }
-
-    /*
-     Удаляет элемент в список для наблюдения за ним в MutableLiveData
-     @param items Список
-     */
-    private fun <T> MutableLiveData<MutableList<T>>.delete(items: List<T>?) {
-        items?.let {
-            val updatedItems = mutableListOf<T>().apply {
-                addAll(this@delete.value ?: mutableListOf())
-                removeAll(items)
-            }
-            this.value = updatedItems
-        }
-    }
-
 }

@@ -7,6 +7,7 @@ import androidx.room.Room
 import com.ghettowhitestar.magentatest.api.PicsumApi
 import com.ghettowhitestar.magentatest.db.AppDatabase
 import com.ghettowhitestar.magentatest.db.LikedPhotoDao
+import com.ghettowhitestar.magentatest.source.CacheManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,14 +18,14 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-//Основной DI модуль приложения
+/**Основной DI модуль приложения*/
 @Module
 @InstallIn(ApplicationComponent::class)
-object AppModule  {
+object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit() : Retrofit =
+    fun provideRetrofit(): Retrofit =
         Retrofit.Builder()
             .baseUrl(PicsumApi.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -33,15 +34,16 @@ object AppModule  {
 
     @Provides
     @Singleton
-    fun checkNetwork(@ApplicationContext appContext: Context):ConnectivityManager{
-        var connectivity : ConnectivityManager? = null
-        connectivity = appContext.getSystemService(Service.CONNECTIVITY_SERVICE)as ConnectivityManager
+    fun checkNetwork(@ApplicationContext appContext: Context): ConnectivityManager {
+        var connectivity: ConnectivityManager? = null
+        connectivity =
+            appContext.getSystemService(Service.CONNECTIVITY_SERVICE) as ConnectivityManager
         return connectivity
     }
 
     @Provides
     @Singleton
-    fun providePicsumApi(retrofit: Retrofit) : PicsumApi =
+    fun providePicsumApi(retrofit: Retrofit): PicsumApi =
         retrofit.create(PicsumApi::class.java)
 
     @Provides
@@ -59,5 +61,9 @@ object AppModule  {
             "picsum"
         ).build()
     }
+
+    @Provides
+    @Singleton
+    fun provideCacheManager() = CacheManager()
 
 }

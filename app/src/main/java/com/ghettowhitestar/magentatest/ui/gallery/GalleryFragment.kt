@@ -10,12 +10,13 @@ import com.ghettowhitestar.magentatest.vm.PhotoViewModel
 import com.ghettowhitestar.magentatest.ui.adapter.GalleryPhotoAdapter
 import com.ghettowhitestar.magentatest.paginator.PaginationListener
 import dagger.hilt.android.AndroidEntryPoint
-//Фрагмент отвечающий за отображение случайных фотографий
+
+/** Фрагмент отвечающий за отображение случайных фотографий */
 @AndroidEntryPoint
 class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
 
     private val viewModel: PhotoViewModel by activityViewModels()
-    private lateinit var binding : PicturesTapeLayoutBinding
+    private lateinit var binding: PicturesTapeLayoutBinding
     private lateinit var adapter: GalleryPhotoAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -23,7 +24,7 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
 
         binding = PicturesTapeLayoutBinding.bind(view)
 
-        adapter = GalleryPhotoAdapter {photo, bitmap -> viewModel.changeLikePhoto(photo, bitmap) }
+        adapter = GalleryPhotoAdapter { photo, bitmap -> viewModel.changeLikePhoto(photo, bitmap) }
 
         binding.apply {
             progressBar.visibility = View.VISIBLE
@@ -34,27 +35,32 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
                 progressBar.visibility = View.VISIBLE
                 binding.textViewError.visibility = View.GONE
                 binding.buttonRetry.visibility = View.GONE
-                viewModel.checkNetworkConnection()}
+                viewModel.checkNetworkConnection()
+            }
         }
-        //Слушаем изменения в списки отображаемых фотографий
-        //обновляем адаптер при изменении
-        viewModel.galleryPhotoList.observe(viewLifecycleOwner,{
-            it.let {items->
+        /**
+         * Слушаем изменения в списки отображаемых фотографий
+         * обновляем адаптер при изменении
+         */
+        viewModel.galleryPhotoList.observe(viewLifecycleOwner, {
+            it.let { items ->
                 adapter.updateItems(items)
                 binding.progressBar.visibility = View.GONE
             }
 
         })
-        //Слушаем проверку на интернет при заходе в приложение
-        viewModel.isStartNetwork.observe(viewLifecycleOwner,{
+        /** Слушаем проверку на интернет при заходе в приложение */
+        viewModel.isStartNetwork.observe(viewLifecycleOwner, {
             isGalleryEmpty(it)
         })
 
     }
 
-//Показывает/скрывает вью при отключенном/подключенном интернете
-// при заходе в приложение
-private fun isGalleryEmpty(isNetwork:Boolean){
+    /**
+     * Показывает/скрывает вью при отключенном/подключенном интернете
+     *при заходе в приложение
+     */
+    private fun isGalleryEmpty(isNetwork: Boolean) {
         binding.apply {
             if (isNetwork) {
                 progressBar.visibility = View.GONE
