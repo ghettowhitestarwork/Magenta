@@ -7,6 +7,7 @@ import com.ghettowhitestar.magentatest.ui.gallery.GalleryFragment
 import com.ghettowhitestar.magentatest.ui.like.LikesFragment
 import java.lang.IllegalStateException
 
+
 class SectionsPagerAdapter(fm: FragmentActivity)
     : FragmentStateAdapter(fm) {
 

@@ -9,6 +9,7 @@ import com.ghettowhitestar.magentatest.databinding.PicturesTapeLayoutBinding
 import com.ghettowhitestar.magentatest.ui.adapter.GalleryPhotoAdapter
 import com.ghettowhitestar.magentatest.vm.PhotoViewModel
 
+//Фрагмент отображающий понравившиеся фотографии
 class LikesFragment : Fragment(R.layout.pictures_tape_layout) {
 
     private val viewModel: PhotoViewModel by activityViewModels()
@@ -20,13 +21,15 @@ class LikesFragment : Fragment(R.layout.pictures_tape_layout) {
 
         binding = PicturesTapeLayoutBinding.bind(view)
 
-        adapter = GalleryPhotoAdapter { position, photo, bitmap -> viewModel.changeLikePhoto(position,photo, bitmap) }
+        adapter = GalleryPhotoAdapter {photo, bitmap -> viewModel.changeLikePhoto(photo, bitmap) }
 
         binding.apply {
             recyclerView.adapter = adapter
             buttonRetry.setOnClickListener { }
         }
 
+        // Слушаем изменение в списке лайкнутых фотографий
+        // Обновляем список при изменении
         viewModel.likedPhotoList.observe(viewLifecycleOwner,{
             it.let {items->
                 isLikeListEmpty(it.isEmpty())
@@ -35,7 +38,8 @@ class LikesFragment : Fragment(R.layout.pictures_tape_layout) {
         })
     }
 
-     fun isLikeListEmpty(isEmpty: Boolean){
+ //Показывает сообщение, если нет лайкнутых картинок
+ private fun isLikeListEmpty(isEmpty: Boolean){
          if (isEmpty){
              binding.textViewError.visibility = View.VISIBLE
          }else {

@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-
+// Объкт хранимый в базе данных и POJO для запросов
 @Entity
 @Parcelize
 data class PicsumPhoto(

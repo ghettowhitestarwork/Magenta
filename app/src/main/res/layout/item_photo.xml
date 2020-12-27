@@ -8,7 +8,8 @@
     <ImageView
         android:id="@+id/picture_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:contentDescription="TODO" />
 
     <View
         android:layout_width="match_parent"
@@ -37,6 +38,7 @@
         android:layout_height="@dimen/image_size"
         android:layout_alignBottom="@id/picture_image"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_dislike_white" />
+        android:src="@drawable/ic_dislike_white"
+        android:contentDescription="TODO" />
 
 </RelativeLayout>

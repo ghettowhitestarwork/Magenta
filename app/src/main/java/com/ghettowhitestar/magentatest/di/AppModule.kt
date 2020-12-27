@@ -3,7 +3,6 @@ package com.ghettowhitestar.magentatest.di
 import android.app.Service
 import android.content.Context
 import android.net.ConnectivityManager
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.room.Room
 import com.ghettowhitestar.magentatest.api.PicsumApi
 import com.ghettowhitestar.magentatest.db.AppDatabase
@@ -18,6 +17,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+//Основной DI модуль приложения
 @Module
 @InstallIn(ApplicationComponent::class)
 object AppModule  {

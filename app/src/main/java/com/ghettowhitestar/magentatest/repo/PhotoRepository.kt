@@ -30,17 +30,20 @@ class PhotoRepository @Inject constructor(private val picsumApi: PicsumApi,priva
 
    fun isNetworkAvailable() = connectivityManager.activeNetwork == null
 
-   fun deleteImage(photoName:String){
+    // Удаление фотографии из памяти телефона
+    // @ path путь к сохраненной фотографии
+   fun deleteImage(path:String){
         val storageDir = File(
             Environment.getExternalStorageDirectory()
                 .toString() + "/DCIM"
         )
-        val imageFile = File(storageDir, photoName)
+        val imageFile = File(storageDir, path)
         if (imageFile.exists()){
             imageFile.delete()
         }
     }
 
+    // Сохранение фотографии на телефоне
     fun saveImage(image: Bitmap, photo: PicsumPhoto) {
         val storageDir = File(
             Environment.getExternalStorageDirectory()

@@ -1,27 +1,21 @@
 package com.ghettowhitestar.magentatest.vm
 
 import android.annotation.SuppressLint
-import android.app.Application
-import android.content.Context
 import android.graphics.Bitmap
-import android.net.ConnectivityManager
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ghettowhitestar.magentatest.App
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
 import com.ghettowhitestar.magentatest.paginator.Pageable
 import com.ghettowhitestar.magentatest.repo.PhotoRepository
 import io.reactivex.Single
-
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
+// Общая ViewModel для Like и Gallery Fragment
 class PhotoViewModel @ViewModelInject constructor(
     private val repository: PhotoRepository
 ) :ViewModel(),Pageable {
@@ -30,16 +24,20 @@ class PhotoViewModel @ViewModelInject constructor(
     override var hasMore: Boolean = true
     override var currentPage: Int = 1
     override var isDownloading: Boolean = false
-    val compositeDisposable = CompositeDisposable()
 
+    private val compositeDisposable = CompositeDisposable()
+
+    // Лайв дата для проверки на интернет при запуске приложения
     private val mutableIsStartNetwork = MutableLiveData<Boolean>()
     val isStartNetwork  : LiveData<Boolean>
         get() = mutableIsStartNetwork
 
+    // Лайв дата для списка рандомных фотографий
     private val mutableGalleryPhotoList = MutableLiveData<MutableList<PicsumPhoto>>()
     val galleryPhotoList : LiveData<MutableList<PicsumPhoto>>
         get() = mutableGalleryPhotoList
 
+    // Лайв дата для списка лайкнутных фотографий
     private val mutableLikedPhotoList = MutableLiveData<MutableList<PicsumPhoto>>()
     val likedPhotoList : LiveData<MutableList<PicsumPhoto>>
         get() = mutableLikedPhotoList
@@ -48,6 +46,7 @@ class PhotoViewModel @ViewModelInject constructor(
         getLikedPhoto()
     }
 
+    // Запрос и обработка результата лайкнутых фотографий
     private fun getLikedPhoto(){
         repository.getLikesPhotoResult()
             .subscribeOn(Schedulers.io())
@@ -67,8 +66,8 @@ class PhotoViewModel @ViewModelInject constructor(
         }
     }
 
-
-    fun getGalleryPhoto() {
+    // Запрос и обработка результата рандомных фотографий
+    private fun getGalleryPhoto() {
        isDownloading = true
        repository.getGalleryPhotosResult(pageSize, currentPage)
            .subscribeOn(Schedulers.io())
@@ -82,9 +81,11 @@ class PhotoViewModel @ViewModelInject constructor(
            }).addTo(compositeDisposable)
     }
 
-
+    // Обработка события при лайке/дизлайке фотографии
+    // @param bitmap файл картинки, для сохранения на телефоне
+    // @param photo информация о картинке для записи/удаления из бд
     @SuppressLint("CheckResult")
-    fun changeLikePhoto(position: Int, photo: PicsumPhoto, bitmap: Bitmap){
+    fun changeLikePhoto(photo: PicsumPhoto, bitmap: Bitmap){
         if (photo.isLikedPhoto) {
             Single.fromCallable {
                 unlikePhoto(photo)
@@ -113,6 +114,8 @@ class PhotoViewModel @ViewModelInject constructor(
         }
     }
 
+    // Проверка рандомных фотографий на то лайкнуты ли они
+    // @param listPhoto список фотографий полученных по запросу
     private fun isGalleryPhotoLiked(listPhoto:List<PicsumPhoto>):List<PicsumPhoto>{
         for (item:PicsumPhoto in listPhoto){
             for (liked:PicsumPhoto in mutableLikedPhotoList.value?: listOf()){
@@ -124,6 +127,8 @@ class PhotoViewModel @ViewModelInject constructor(
         return listPhoto
     }
 
+    // Поиск лайкнутой фотографий в списке рандомных фотографий что бы снять лайк
+    // @param photo фотография у которой сняли лайк на экране понравившихся
     private fun findLikedPhoto(photo: PicsumPhoto){
         for (item:PicsumPhoto in mutableGalleryPhotoList.value?: listOf()) {
             if (item.id == photo.id){
@@ -133,16 +138,22 @@ class PhotoViewModel @ViewModelInject constructor(
         mutableGalleryPhotoList.add(listOf())
     }
 
+    // Обрабатываем лайк фотографии
+    // @param bitmap файл картинки, для сохранения на телефоне
+    // @param photo информация о картинке для записи в бд
     private fun likePhoto(bitmap: Bitmap,photo: PicsumPhoto){
         repository.saveImage(bitmap, photo)
         repository.insertLikedPhoto(photo)
     }
 
+    // Обрабатываем дизлайк фотографий
+    // @param photo фотография которой поставили дизлайк
     private fun unlikePhoto(photo: PicsumPhoto){
         repository.deleteImage(photo.path)
         repository.deleteLikedPhoto(photo)
     }
 
+    //Реализация подгрузи данных
     override fun loadNextPage() {
         getGalleryPhoto()
     }
@@ -152,7 +163,11 @@ class PhotoViewModel @ViewModelInject constructor(
         compositeDisposable.dispose()
     }
 
-    fun <T> MutableLiveData<MutableList<T>>.add(items: List<T>?) {
+     /*
+     Добавляет элемент в список для наблюдения за ним в MutableLiveData
+     @param items Список
+    */
+     private fun <T> MutableLiveData<MutableList<T>>.add(items: List<T>?) {
         items?.let {
             val updatedItems = mutableListOf<T>().apply {
                 addAll(this@add.value ?: mutableListOf())
@@ -162,7 +177,11 @@ class PhotoViewModel @ViewModelInject constructor(
         }
     }
 
-    fun <T> MutableLiveData<MutableList<T>>.delete(items: List<T>?) {
+    /*
+     Удаляет элемент в список для наблюдения за ним в MutableLiveData
+     @param items Список
+     */
+    private fun <T> MutableLiveData<MutableList<T>>.delete(items: List<T>?) {
         items?.let {
             val updatedItems = mutableListOf<T>().apply {
                 addAll(this@delete.value ?: mutableListOf())

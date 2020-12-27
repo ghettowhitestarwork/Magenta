@@ -5,4 +5,5 @@
     <string name="connectionInternet">Check your internet connection</string>
     <string name="retry">Retry</string>
     <string name="no_favors">You don\'t have favorite photos</string>
+    <string name="not_loaded">Results could not be loaded</string>
 </resources>

@@ -10,7 +10,7 @@ import com.ghettowhitestar.magentatest.vm.PhotoViewModel
 import com.ghettowhitestar.magentatest.ui.adapter.GalleryPhotoAdapter
 import com.ghettowhitestar.magentatest.paginator.PaginationListener
 import dagger.hilt.android.AndroidEntryPoint
-
+//Фрагмент отвечающий за отображение случайных фотографий
 @AndroidEntryPoint
 class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
 
@@ -23,7 +23,7 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
 
         binding = PicturesTapeLayoutBinding.bind(view)
 
-        adapter = GalleryPhotoAdapter { position, photo, bitmap -> viewModel.changeLikePhoto(position,photo, bitmap) }
+        adapter = GalleryPhotoAdapter {photo, bitmap -> viewModel.changeLikePhoto(photo, bitmap) }
 
         binding.apply {
             progressBar.visibility = View.VISIBLE
@@ -36,7 +36,8 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
                 binding.buttonRetry.visibility = View.GONE
                 viewModel.checkNetworkConnection()}
         }
-
+        //Слушаем изменения в списки отображаемых фотографий
+        //обновляем адаптер при изменении
         viewModel.galleryPhotoList.observe(viewLifecycleOwner,{
             it.let {items->
                 adapter.updateItems(items)
@@ -44,14 +45,16 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
             }
 
         })
-
+        //Слушаем проверку на интернет при заходе в приложение
         viewModel.isStartNetwork.observe(viewLifecycleOwner,{
             isGalleryEmpty(it)
         })
 
     }
 
-    fun isGalleryEmpty(isNetwork:Boolean){
+//Показывает/скрывает вью при отключенном/подключенном интернете
+// при заходе в приложение
+private fun isGalleryEmpty(isNetwork:Boolean){
         binding.apply {
             if (isNetwork) {
                 progressBar.visibility = View.GONE

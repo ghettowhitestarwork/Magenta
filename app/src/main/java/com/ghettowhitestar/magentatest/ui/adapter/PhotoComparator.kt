@@ -2,7 +2,7 @@ package com.ghettowhitestar.magentatest.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
-
+//Базовый класс для сравнения списков через DiffUtil
 class PhotoComparator(private val oldItem: List<PicsumPhoto>,private val newItem: List<PicsumPhoto>) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = oldItem.size
