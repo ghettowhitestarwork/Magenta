@@ -1,7 +1,9 @@
 package com.ghettowhitestar.magentatest.ui.gallery
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.ghettowhitestar.magentatest.R
@@ -53,8 +55,10 @@ class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
         viewModel.isStartNetwork.observe(viewLifecycleOwner, {
             isGalleryEmpty(it)
         })
-
     }
+
+    fun Context.toast(message: CharSequence) =
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
     /**
      * Показывает/скрывает вью при отключенном/подключенном интернете
