@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.ghettowhitestar.magentatest.R
-import com.ghettowhitestar.magentatest.databinding.PicturesTapeLayoutBinding
+import com.ghettowhitestar.magentatest.databinding.FragmentLayoutBinding
 import com.ghettowhitestar.magentatest.vm.PhotoViewModel
 import com.ghettowhitestar.magentatest.ui.adapter.GalleryPhotoAdapter
 import com.ghettowhitestar.magentatest.paginator.PaginationListener
@@ -15,16 +15,16 @@ import dagger.hilt.android.AndroidEntryPoint
 
 /** Фрагмент отвечающий за отображение случайных фотографий */
 @AndroidEntryPoint
-class GalleryFragment : Fragment(R.layout.pictures_tape_layout) {
+class GalleryFragment : Fragment(R.layout.fragment_layout) {
 
     private val viewModel: PhotoViewModel by activityViewModels()
-    private lateinit var binding: PicturesTapeLayoutBinding
+    private lateinit var binding: FragmentLayoutBinding
     private lateinit var adapter: GalleryPhotoAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding = PicturesTapeLayoutBinding.bind(view)
+        binding = FragmentLayoutBinding.bind(view)
 
         adapter = GalleryPhotoAdapter { photo, bitmap -> viewModel.changeLikePhoto(photo, bitmap) }
 
