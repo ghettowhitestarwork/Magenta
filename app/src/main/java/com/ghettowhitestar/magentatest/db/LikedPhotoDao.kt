@@ -14,13 +14,13 @@ interface LikedPhotoDao {
 
     /**Получение всех понравившихся фотографий*/
     @Query("SELECT * FROM PicsumPhoto")
-    fun getAllLikedPhotos(): Single<List<PicsumPhoto>>
+  suspend  fun getAllLikedPhotos(): List<PicsumPhoto>
 
     /**Добавление понравившейся фотографии*/
     @Insert
-    fun insertLikedPhoto(likedPhoto: PicsumPhoto)
+  suspend  fun insertLikedPhoto(likedPhoto: PicsumPhoto)
 
     /**Удаление понравившейся фотографии*/
     @Delete
-    fun deleteLikedPhoto(likedPhoto: PicsumPhoto)
+  suspend  fun deleteLikedPhoto(likedPhoto: PicsumPhoto)
 }

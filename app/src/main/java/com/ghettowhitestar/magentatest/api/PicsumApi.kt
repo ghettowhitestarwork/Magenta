@@ -14,7 +14,7 @@ interface PicsumApi {
      * @param limit кол-во получаемых фотографий на одной странице
      */
     @GET("v2/list")
-    fun getListGalleryPhotos(
+   suspend fun getListGalleryPhotos(
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): Single<List<PicsumPhoto>>

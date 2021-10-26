@@ -4,10 +4,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.ghettowhitestar.magentatest.R
 import com.ghettowhitestar.magentatest.databinding.FragmentLayoutBinding
 import com.ghettowhitestar.magentatest.ui.adapter.GalleryPhotoAdapter
 import com.ghettowhitestar.magentatest.vm.PhotoViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 /**Фрагмент отображающий понравившиеся фотографии*/
 class LikesFragment : Fragment(R.layout.fragment_layout) {
@@ -32,12 +37,17 @@ class LikesFragment : Fragment(R.layout.fragment_layout) {
          * Слушаем изменение в списке лайкнутых фотографий
          * Обновляем список при изменении
          */
-        viewModel.likedPhotoList.observe(viewLifecycleOwner, {
-            it.let { items ->
-                isLikeListEmpty(it.isEmpty())
-                adapter.updateItems(items)
+        lifecycleScope.launch {
+            viewModel.likedPhotoList
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect {
+                it.let { items ->
+                    isLikeListEmpty(it.isEmpty())
+                    adapter.updateItems(items)
+                }
             }
-        })
+        }
+
     }
 
     /** Показывает сообщение, если нет лайкнутых картинок */

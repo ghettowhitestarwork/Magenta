@@ -23,16 +23,16 @@ class PhotoRepository @Inject constructor(
     private val cacheManager: CacheManager
 ) {
 
-    fun getGalleryPhotosResult(pageSize: Int, currentPage: Int) =
+   suspend fun getGalleryPhotosResult(pageSize: Int, currentPage: Int) =
         picsumApi.getListGalleryPhotos(currentPage, pageSize)
 
-    fun getLikesPhotoResult() =
+    suspend fun getLikesPhotoResult() =
         likedPhotoDao.getAllLikedPhotos()
 
-    fun insertLikedPhoto(photo: PicsumPhoto) =
+    suspend fun insertLikedPhoto(photo: PicsumPhoto) =
         likedPhotoDao.insertLikedPhoto(photo)
 
-    fun deleteLikedPhoto(photo: PicsumPhoto) =
+    suspend fun deleteLikedPhoto(photo: PicsumPhoto) =
         likedPhotoDao.deleteLikedPhoto(photo)
 
     fun isNetworkAvailable() = connectivityManager.activeNetwork == null

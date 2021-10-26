@@ -6,12 +6,20 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.ghettowhitestar.magentatest.R
 import com.ghettowhitestar.magentatest.databinding.FragmentLayoutBinding
 import com.ghettowhitestar.magentatest.vm.PhotoViewModel
 import com.ghettowhitestar.magentatest.ui.adapter.GalleryPhotoAdapter
 import com.ghettowhitestar.magentatest.paginator.PaginationListener
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /** Фрагмент отвечающий за отображение случайных фотографий */
 @AndroidEntryPoint
@@ -40,30 +48,29 @@ class GalleryFragment : Fragment(R.layout.fragment_layout) {
                 viewModel.checkNetworkConnection()
             }
         }
-        /**
-         * Слушаем изменения в списки отображаемых фотографий
-         * обновляем адаптер при изменении
-         */
-        viewModel.galleryPhotoList.observe(viewLifecycleOwner, {
-            it.let { items ->
-                adapter.updateItems(items)
-                binding.progressBar.visibility = View.GONE
+
+        lifecycleScope.launchWhenStarted {
+
+            viewModel.isStartNetwork.collect {
+                isGalleryEmpty(it)
             }
 
-        })
-        /** Слушаем проверку на интернет при заходе в приложение */
-        viewModel.isStartNetwork.observe(viewLifecycleOwner, {
-            isGalleryEmpty(it)
-        })
+            viewModel.galleryPhotoList.collect {
+                it.let { items ->
+                    adapter.updateItems(items)
+                    binding.progressBar.visibility = View.GONE
+                }
+            }
+
+            viewModel.galleryPhotoList.collect {
+                it.let { items ->
+                    adapter.updateItems(items)
+                    binding.progressBar.visibility = View.GONE
+                }
+            }
+        }
     }
 
-    fun Context.toast(message: CharSequence) =
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-
-    /**
-     * Показывает/скрывает вью при отключенном/подключенном интернете
-     *при заходе в приложение
-     */
     private fun isGalleryEmpty(isNetwork: Boolean) {
         binding.apply {
             if (isNetwork) {

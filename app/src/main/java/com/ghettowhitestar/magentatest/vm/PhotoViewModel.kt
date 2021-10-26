@@ -6,6 +6,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ghettowhitestar.magentatest.data.PicsumPhoto
 import com.ghettowhitestar.magentatest.paginator.Pageable
 import com.ghettowhitestar.magentatest.repo.PhotoRepository
@@ -16,6 +17,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Общая ViewModel для Like и Gallery Fragment
@@ -32,19 +39,16 @@ class PhotoViewModel @ViewModelInject constructor(
     private val compositeDisposable = CompositeDisposable()
 
     /** Лайв дата для проверки на интернет при запуске приложения */
-    private val mutableIsStartNetwork = MutableLiveData<Boolean>()
-    val isStartNetwork: LiveData<Boolean>
-        get() = mutableIsStartNetwork
+    private val mutableIsStartNetwork = MutableStateFlow(false)
+    val isStartNetwork: StateFlow<Boolean> = mutableIsStartNetwork.asStateFlow()
 
     /** Лайв дата для списка рандомных фотографий */
-    private val mutableGalleryPhotoList = MutableLiveData<MutableList<PicsumPhoto>>()
-    val galleryPhotoList: LiveData<MutableList<PicsumPhoto>>
-        get() = mutableGalleryPhotoList
+    private val mutableGalleryPhotoList = MutableStateFlow(mutableListOf<PicsumPhoto>())
+    val galleryPhotoList: StateFlow<MutableList<PicsumPhoto>> = mutableGalleryPhotoList.asStateFlow()
 
     /** Лайв дата для списка лайкнутных фотографий */
-    private val mutableLikedPhotoList = MutableLiveData<MutableList<PicsumPhoto>>()
-    val likedPhotoList: LiveData<MutableList<PicsumPhoto>>
-        get() = mutableLikedPhotoList
+    private val mutableLikedPhotoList = MutableStateFlow(mutableListOf<PicsumPhoto>())
+    val likedPhotoList: StateFlow<MutableList<PicsumPhoto>> = mutableLikedPhotoList.asStateFlow()
 
     init {
         getLikedPhoto()
@@ -52,6 +56,13 @@ class PhotoViewModel @ViewModelInject constructor(
 
     /** Запрос и обработка результата лайкнутых фотографий */
     private fun getLikedPhoto() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+               val likedPhoto = repository.getLikesPhotoResult()
+
+                checkNetworkConnection()
+            }
+
         repository.getLikesPhotoResult()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -59,6 +70,7 @@ class PhotoViewModel @ViewModelInject constructor(
                 mutableLikedPhotoList.add(it)
                 checkNetworkConnection()
             }, {}).addTo(compositeDisposable)
+        }
     }
 
     fun checkNetworkConnection() {
