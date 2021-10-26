@@ -52,6 +52,8 @@ class PhotoViewModel @ViewModelInject constructor(
 
     init {
         getLikedPhoto()
+        getLikedPhoto()
+        getLikedPhoto()
     }
 
     /** Запрос и обработка результата лайкнутых фотографий */
