@@ -52,6 +52,7 @@ class PhotoViewModel @ViewModelInject constructor(
 
     init {
         getLikedPhoto()
+        getLikedPhoto()
     }
 
     /** Запрос и обработка результата лайкнутых фотографий */
@@ -78,7 +79,7 @@ class PhotoViewModel @ViewModelInject constructor(
             mutableIsStartNetwork.value = true
         } else {
             mutableIsStartNetwork.value = false
-            getGalleryPhoto()
+            getGalleryPhoto
         }
     }
 
