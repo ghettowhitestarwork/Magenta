@@ -49,8 +49,11 @@ class PhotoViewModel @ViewModelInject constructor(
     /** Лайв дата для списка лайкнутных фотографий */
     private val mutableLikedPhotoList = MutableStateFlow(mutableListOf<PicsumPhoto>())
     val likedPhotoList: StateFlow<MutableList<PicsumPhoto>> = mutableLikedPhotoList.asStateFlow()
+    val likedPhotoList: StateFlow<MutableList<PicsumPhoto>> = mutableLikedPhotoList.asStateFlow()
 
     init {
+        getLikedPhoto()
+        getLikedPhoto()
         getLikedPhoto()
     }
 
@@ -61,6 +64,7 @@ class PhotoViewModel @ViewModelInject constructor(
                val likedPhoto = repository.getLikesPhotoResult()
 
                 checkNetworkConnection()
+
             }
 
         repository.getLikesPhotoResult()
